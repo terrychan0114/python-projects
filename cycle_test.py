@@ -32,9 +32,9 @@ class pushButtonTest:
     def open_part(self):
         print("Opening part")
         GPIO.output(open_pin, True)
-        sleep(2)
+        sleep(4)
         GPIO.output(open_pin, False)
-        sleep(1)
+        sleep(3)
         return
     
     def close_part(self):
@@ -49,8 +49,8 @@ class pushButtonTest:
         self.reset_position()
         self.open_part()
         sleep(1)
-        self.close_part()
-        sleep(1)
+#         self.close_part()
+#         sleep(1)
         self.current_cycle += 1
         return
     
@@ -65,8 +65,8 @@ try:
     open_pin = 11
     close_pin = 13
     button_pin = 10
-    target_cycle = 5
-    current_cycle = 1
+    target_cycle = 5000
+    current_cycle = 4355
     
     start_flag = False
     
