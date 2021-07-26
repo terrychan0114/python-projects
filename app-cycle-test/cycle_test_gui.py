@@ -11,16 +11,24 @@ window.columnconfigure(1, minsize=100, weight=1)
 
 # Creating all of the widget components in this application
 cycle_number = tk.Label(master=window, text="Input cycle start number and target number, then press start")
+
 fr_entry = tk.Frame(window)
-fr_btn = tk.Frame(window)
-btn_start = tk.Button(fr_btn, text="Start")
-btn_end = tk.Button(fr_btn, text="Stop")
+start_label = tk.Label(master=fr_entry, text="Start cycle number")
+target_label = tk.Label(master=fr_entry, text="Target cyce number")
 start_number = tk.Entry(master=fr_entry, width=10)
 target_number = tk.Entry(master=fr_entry, width=10)
 
+
+fr_btn = tk.Frame(window)
+btn_start = tk.Button(fr_btn, text="Start")
+btn_end = tk.Button(fr_btn, text="Stop")
+
+
 # Arranging the widgets
-start_number.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-target_number.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
+start_label.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+target_label.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
+start_number.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+target_number.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
 btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
 btn_end.grid(row=0, column=1, sticky="ew", padx=5)
 fr_entry.grid(row=0, column=0, sticky="ns")

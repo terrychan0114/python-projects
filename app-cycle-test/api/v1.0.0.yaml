@@ -17,7 +17,7 @@ paths:
       tags:
         - cycleTest
       summary: Get the information
-      operationId: getInfo
+      operationId: getCycle
       responses:
         '200':
           description: Ok
@@ -34,7 +34,7 @@ paths:
       tags:
         - cycleTest
       summary: Add a new info to the server
-      operationId: addInfo
+      operationId: startCycle
       responses:
         '200':
           description: Ok
