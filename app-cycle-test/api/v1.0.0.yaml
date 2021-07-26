@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is the API for the cycle test microservice.
+  version: "1.0.0"
+  title: Cycle Test Microservice
+  contact:
+    email: terry.chan@hohokusinc.com
+    
+tags:
+  - name: cycleTest
+    description: Cycle Test Info
+
+paths:
+  /cycletest:
+    get:
+      tags:
+        - cycleTest
+      summary: Get the information
+      operationId: getCycle
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/cycleTestInfo'
+        '404':
+          description: Item not found
+          
+    post:
+      tags:
+        - cycleTest
+      summary: Add a new info to the server
+      operationId: startCycle
+      responses:
+        '200':
+          description: Ok
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/cycleTestInfo'
+    
+components:
+  schemas:
+    cycleTestInfo:
+      type: object
+      required:
+        - cycle_number
+        - part_number
+      properties:
+        cycle_number:
+          type: integer
+          example: 1000
+        date:
+          type: string
+          example: 7/16/2020 16:38
+        part_number:
+          type: string
+          example: Hi there
+
+  requestBodies:
+    cycleTestInfo:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/cycleTestInfo'
+      required: true
