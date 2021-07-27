@@ -1,5 +1,52 @@
 import tkinter as tk
+import requests
+import json
+import time
+from loguru import logger
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+
+server = 'http://localhost:8080/cycletest'
+
+cycle_status = False
+
+def call_for_status():
+    global server
+    try:
+        r = requests.get('http://localhost:8080/cycletest')
+        return_obj = r.json()
+        if return_obj["cycle_status"] == False:
+            logger.info("Successfully got info")
+            logger.info("The cylinders are free")
+            return True
+        else: 
+            logger.info("Successfully got info")
+            logger.info("The cylinders are in use")
+            return False
+    except:
+        logger.info("Something went wrong, can't connect to server")
+
+def execute_cycle():
+    global server
+    try:
+        status = call_for_status()
+        while status == False:
+            time.sleep(1)
+            status = call_for_status()
+        # Need to have the proper POST function
+        requests.post('http://localhost:8080/cycletest')
+        return
+    except:
+        logger.error("Not able to send in post request")
+        raise
+
+def start_cycle():
+    start_number = ent_start_number.get()
+    target_number = ent_target_number.get()
+    current_number = start_number
+    while current_number <= target_number:
+        logger.info("Executing cycle number", current_number)
+        execute_cycle()
+        current_number += 1
 
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
@@ -15,8 +62,8 @@ cycle_number = tk.Label(master=window, text="Input cycle start number and target
 fr_entry = tk.Frame(window)
 start_label = tk.Label(master=fr_entry, text="Start cycle number")
 target_label = tk.Label(master=fr_entry, text="Target cyce number")
-start_number = tk.Entry(master=fr_entry, width=10)
-target_number = tk.Entry(master=fr_entry, width=10)
+ent_start_number = tk.Entry(master=fr_entry, width=10)
+ent_target_number = tk.Entry(master=fr_entry, width=10)
 
 
 fr_btn = tk.Frame(window)

@@ -24,10 +24,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/cycleTestInfo'
-                x-content-type: application/json
+                $ref: '#/components/schemas/cycleTestInfo'
         "404":
           description: Item not found
       x-openapi-router-controller: server.controllers.cycle_test_controller
@@ -48,23 +45,18 @@ components:
   schemas:
     cycleTestInfo:
       required:
-      - cycle_number
-      - part_number
+      - cycle_status
       type: object
       properties:
-        cycle_number:
-          type: integer
-          example: 1000
-        date:
+        cycle_status:
+          type: boolean
+          example: true
+        timestamp:
           type: string
           example: 7/16/2020 16:38
-        part_number:
-          type: string
-          example: Hi there
       example:
-        date: 7/16/2020 16:38
-        cycle_number: 1000
-        part_number: Hi there
+        cycle_status: true
+        timestamp: 7/16/2020 16:38
   requestBodies:
     cycleTestInfo:
       content:
