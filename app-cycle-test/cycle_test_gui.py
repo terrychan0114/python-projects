@@ -2,13 +2,15 @@ import tkinter as tk
 import requests
 import json
 import time
+import sys
 from loguru import logger
+from threading import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 server = 'http://localhost:8080/cycletest'
 
 cycle_status = False
-
+stop_flag = False
 def call_for_status():
     global server
     try:
@@ -25,6 +27,10 @@ def call_for_status():
     except:
         logger.info("Something went wrong, can't connect to server")
 
+def start_cycle_thread():
+    t1 = Thread(target=start_cycle)
+    t1.start()
+
 def execute_cycle():
     global server
     try:
@@ -33,20 +39,40 @@ def execute_cycle():
             time.sleep(1)
             status = call_for_status()
         # Need to have the proper POST function
-        requests.post('http://localhost:8080/cycletest')
+        # requests.post('http://localhost:8080/cycletest')
+        time.sleep(1)
         return
     except:
         logger.error("Not able to send in post request")
         raise
 
 def start_cycle():
-    start_number = ent_start_number.get()
-    target_number = ent_target_number.get()
+    global stop_flag
+    try:
+        start_number = int(ent_start_number.get())
+    except ValueError:
+        logger.error("Entry value is not an integer")
+    try:
+        target_number = int(ent_target_number.get())
+    except ValueError:
+        logger.error("Entry value is not an integer")
     current_number = start_number
     while current_number <= target_number:
-        logger.info("Executing cycle number", current_number)
-        execute_cycle()
-        current_number += 1
+        if stop_flag == False:
+            logger.info("Executing cycle number", current_number)
+            execute_cycle()
+            cycle_number["text"] = f"Executing cycle {current_number}"
+            current_number += 1
+        else:
+            logger.info("Stopping thread...")
+            stop_flag = False
+            cycle_number["text"] = f"Stopped at cycle {current_number-1}"
+            sys.exit()
+    cycle_number["text"] = f"Finished execution of {current_number-1} cycles"
+
+def stop_cycle():
+    global stop_flag
+    stop_flag = True
 
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
@@ -67,15 +93,15 @@ ent_target_number = tk.Entry(master=fr_entry, width=10)
 
 
 fr_btn = tk.Frame(window)
-btn_start = tk.Button(fr_btn, text="Start")
-btn_end = tk.Button(fr_btn, text="Stop")
+btn_start = tk.Button(fr_btn, text="Start",command=start_cycle_thread)
+btn_end = tk.Button(fr_btn, text="Stop",command=stop_cycle)
 
 
 # Arranging the widgets
 start_label.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
 target_label.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
-start_number.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
-target_number.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
+ent_start_number.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+ent_target_number.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
 btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
 btn_end.grid(row=0, column=1, sticky="ew", padx=5)
 fr_entry.grid(row=0, column=0, sticky="ns")
