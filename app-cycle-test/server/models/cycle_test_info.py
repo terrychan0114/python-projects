@@ -14,30 +14,25 @@ class CycleTestInfo(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, cycle_number: int=None, _date: str=None, part_number: str=None):  # noqa: E501
+    def __init__(self, cycle_status: bool=None, timestamp: str=None):  # noqa: E501
         """CycleTestInfo - a model defined in Swagger
 
-        :param cycle_number: The cycle_number of this CycleTestInfo.  # noqa: E501
-        :type cycle_number: int
-        :param _date: The _date of this CycleTestInfo.  # noqa: E501
-        :type _date: str
-        :param part_number: The part_number of this CycleTestInfo.  # noqa: E501
-        :type part_number: str
+        :param cycle_status: The cycle_status of this CycleTestInfo.  # noqa: E501
+        :type cycle_status: bool
+        :param timestamp: The timestamp of this CycleTestInfo.  # noqa: E501
+        :type timestamp: str
         """
         self.swagger_types = {
-            'cycle_number': int,
-            '_date': str,
-            'part_number': str
+            'cycle_status': bool,
+            'timestamp': str
         }
 
         self.attribute_map = {
-            'cycle_number': 'cycle_number',
-            '_date': 'date',
-            'part_number': 'part_number'
+            'cycle_status': 'cycle_status',
+            'timestamp': 'timestamp'
         }
-        self._cycle_number = cycle_number
-        self.__date = _date
-        self._part_number = part_number
+        self._cycle_status = cycle_status
+        self._timestamp = timestamp
 
     @classmethod
     def from_dict(cls, dikt) -> 'CycleTestInfo':
@@ -51,68 +46,45 @@ class CycleTestInfo(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def cycle_number(self) -> int:
-        """Gets the cycle_number of this CycleTestInfo.
+    def cycle_status(self) -> bool:
+        """Gets the cycle_status of this CycleTestInfo.
 
 
-        :return: The cycle_number of this CycleTestInfo.
-        :rtype: int
+        :return: The cycle_status of this CycleTestInfo.
+        :rtype: bool
         """
-        return self._cycle_number
+        return self._cycle_status
 
-    @cycle_number.setter
-    def cycle_number(self, cycle_number: int):
-        """Sets the cycle_number of this CycleTestInfo.
+    @cycle_status.setter
+    def cycle_status(self, cycle_status: bool):
+        """Sets the cycle_status of this CycleTestInfo.
 
 
-        :param cycle_number: The cycle_number of this CycleTestInfo.
-        :type cycle_number: int
+        :param cycle_status: The cycle_status of this CycleTestInfo.
+        :type cycle_status: bool
         """
-        if cycle_number is None:
-            raise ValueError("Invalid value for `cycle_number`, must not be `None`")  # noqa: E501
+        if cycle_status is None:
+            raise ValueError("Invalid value for `cycle_status`, must not be `None`")  # noqa: E501
 
-        self._cycle_number = cycle_number
+        self._cycle_status = cycle_status
 
     @property
-    def _date(self) -> str:
-        """Gets the _date of this CycleTestInfo.
+    def timestamp(self) -> str:
+        """Gets the timestamp of this CycleTestInfo.
 
 
-        :return: The _date of this CycleTestInfo.
+        :return: The timestamp of this CycleTestInfo.
         :rtype: str
         """
-        return self.__date
+        return self._timestamp
 
-    @_date.setter
-    def _date(self, _date: str):
-        """Sets the _date of this CycleTestInfo.
+    @timestamp.setter
+    def timestamp(self, timestamp: str):
+        """Sets the timestamp of this CycleTestInfo.
 
 
-        :param _date: The _date of this CycleTestInfo.
-        :type _date: str
+        :param timestamp: The timestamp of this CycleTestInfo.
+        :type timestamp: str
         """
 
-        self.__date = _date
-
-    @property
-    def part_number(self) -> str:
-        """Gets the part_number of this CycleTestInfo.
-
-
-        :return: The part_number of this CycleTestInfo.
-        :rtype: str
-        """
-        return self._part_number
-
-    @part_number.setter
-    def part_number(self, part_number: str):
-        """Sets the part_number of this CycleTestInfo.
-
-
-        :param part_number: The part_number of this CycleTestInfo.
-        :type part_number: str
-        """
-        if part_number is None:
-            raise ValueError("Invalid value for `part_number`, must not be `None`")  # noqa: E501
-
-        self._part_number = part_number
+        self._timestamp = timestamp

@@ -24,9 +24,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/cycleTestInfo'
+                $ref: '#/components/schemas/cycleTestInfo'
         '404':
           description: Item not found
           
@@ -48,18 +46,14 @@ components:
     cycleTestInfo:
       type: object
       required:
-        - cycle_number
-        - part_number
+        - cycle_status
       properties:
-        cycle_number:
-          type: integer
-          example: 1000
-        date:
+        cycle_status:
+          type: boolean
+          example: true
+        timestamp:
           type: string
           example: 7/16/2020 16:38
-        part_number:
-          type: string
-          example: Hi there
 
   requestBodies:
     cycleTestInfo:
