@@ -90,7 +90,7 @@ def start_cycle():
 def stop_cycle():
     global stop_flag
     stop_flag = True
-    #reset_gpio()
+    reset_gpio()
 
 def reset_gpio():
     r = requests.get(server_addr+'/reset')
