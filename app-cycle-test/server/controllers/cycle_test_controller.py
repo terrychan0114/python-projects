@@ -1,7 +1,7 @@
 import connexion
 import six
 import sys
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from loguru import logger
 from time import sleep
 from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
@@ -33,8 +33,8 @@ def initialize_gpio():
         GPIO.output(open_pin, False)
         GPIO.output(close_pin, False)
         logger.info("Successful initialization")
-        global init_state
-        init_state = True
+        global init_status
+        init_status = True
     except:
         logger.info("Initilization failed")
     return
@@ -44,19 +44,19 @@ def pi_status():
     # This is the function to test if the test is still running
     global cycle_status
     if cycle_status == False:
-        logger.info("The cycle is not running")
+        logger.debug("The cycle is not running")
         return False
     else:
-        logger.info("The cycle is running")
+        logger.debug("The cycle is running")
         return True
 
 def open_latch():
     global open_pin
     global close_pin
     logger.info("Opening part")
-    # GPIO.output(open_pin, True)
+    GPIO.output(open_pin, True)
     sleep(4)
-    # GPIO.output(open_pin, False)
+    GPIO.output(open_pin, False)
     sleep(3)
     return
 
@@ -64,9 +64,9 @@ def close_latch():
     global open_pin
     global close_pin
     logger.info("Closing part")
-    # GPIO.output(close_pin, True)
+    GPIO.output(close_pin, True)
     sleep(10)
-    # GPIO.output(close_pin, False)
+    GPIO.output(close_pin, False)
     sleep(1)
     return
 
@@ -89,11 +89,7 @@ def full_cycle_thread():
 def run_cycle():
     global cycle_status
     global init_status
-    cycle_status = True
     try:
-        if init_status == False:
-            logger.info("Require initilization")
-            initialize_gpio()
         logger.info("Starting test")
         logger.info("Open latch")
         open_latch()
@@ -102,7 +98,7 @@ def run_cycle():
         cycle_status = False
         return True
     except:
-        logger.error("Something went wrong...")
+        logger.error("Something went wrong, unable to start test")
         cycle_status = False
         return False
 
@@ -138,5 +134,9 @@ def start_cycle(body):  # noqa: E501
     if connexion.request.is_json:
         body = CycleTestInfo.from_dict(connexion.request.get_json())  # noqa: E501
     logger.info("Got trigger signal")
-    # full_cycle_thread()
-    return "Let's dance"
+    global init_status
+    if init_status == False:
+        logger.info("Initializing GPIO")
+        initialize_gpio()
+    full_cycle_thread()
+    return
