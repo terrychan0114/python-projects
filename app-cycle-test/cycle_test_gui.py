@@ -109,6 +109,7 @@ ent_target_number = tk.Entry(master=fr_entry, width=10)
 fr_btn = tk.Frame(window)
 btn_start = tk.Button(fr_btn, text="Start",command=start_cycle_thread)
 btn_end = tk.Button(fr_btn, text="Stop",command=stop_cycle)
+# btn_reset = tk.Button(fr_btn,text="Reset",command=reset)
 
 # Arranging the widgets
 start_label.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
