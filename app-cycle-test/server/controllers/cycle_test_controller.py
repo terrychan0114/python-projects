@@ -1,7 +1,7 @@
 import connexion
 import six
 import sys
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from loguru import logger
 from time import sleep
 from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
@@ -21,7 +21,11 @@ def initialize_gpio():
     logger.info("Initializing GPIO ports")
     global open_pin
     global close_pin
-
+    #try:
+    #    GPIO.cleanup()
+    #    logger.debug("GPIO  cleaned up")
+    #except:
+    #    logger.debug("GPIO already cleaned up")
     try:
         GPIO.setmode(GPIO.BOARD) 
         GPIO.setup(open_pin, GPIO.OUT) #Red LED 
