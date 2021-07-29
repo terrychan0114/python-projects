@@ -135,6 +135,9 @@ def reset_gpio():  # noqa: E501
     global open_pin
     global close_pin
     global init_status
+    global cycle_status
+    while cycle_status == True:
+        sleep(1)
     GPIO.cleanup()
     open_channel_is_on = GPIO.input(open_pin)
     close_channel_is_on = GPIO.input(close_pin)
