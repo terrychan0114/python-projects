@@ -7,14 +7,15 @@ from loguru import logger
 from threading import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-server_addr = 'http://localhost:8080/cycletest'
+server_addr = 'http://localhost:8080'
 
 cycle_status = False
 stop_flag = False
 def call_for_status():
     global server_addr
     try:
-        r = requests.get(server_addr)
+
+        r = requests.get(server_addr+'/cycletest')
         return_obj = r.json()
         if return_obj["cycle_status"] == False:
             logger.debug("Successfully got info")
@@ -46,7 +47,7 @@ def execute_cycle():
         payload = {
             'cycle_status': True
         }
-        r = requests.post(server_addr,json=payload)
+        r = requests.post(server_addr+'/cycletest',json=payload)
         if r.status_code == 200:
             logger.debug("Request ok")
         elif r.status_code == 415:
@@ -82,6 +83,7 @@ def start_cycle():
             logger.info("Stopping thread...")
             stop_flag = False
             cycle_number["text"] = f"Stopped at cycle {current_number-1}"
+
             sys.exit()
     cycle_number["text"] = f"Finished execution of {current_number-1} cycles"
 
@@ -89,6 +91,12 @@ def stop_cycle():
     global stop_flag
     stop_flag = True
 
+def reset_gpio():
+    r = requests.get(server_addr+'/reset')
+    if r.status_code == 200:
+        logger.info("GPIO reset finished")
+    else:
+        logger.error("GPIO reset failed")
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
 window.title("Cycle test")
@@ -102,13 +110,14 @@ cycle_number = tk.Label(master=window, text="Input cycle start number and target
 
 fr_entry = tk.Frame(window)
 start_label = tk.Label(master=fr_entry, text="Start cycle number")
-target_label = tk.Label(master=fr_entry, text="Target cyce number")
+target_label = tk.Label(master=fr_entry, text="Target cycle number")
 ent_start_number = tk.Entry(master=fr_entry, width=10)
 ent_target_number = tk.Entry(master=fr_entry, width=10)
 
 fr_btn = tk.Frame(window)
 btn_start = tk.Button(fr_btn, text="Start",command=start_cycle_thread)
 btn_end = tk.Button(fr_btn, text="Stop",command=stop_cycle)
+# btn_reset = tk.Button(fr_btn,text="Reset",command=reset)
 
 # Arranging the widgets
 start_label.grid(row=0, column=0, sticky="ew", padx=5, pady=5)

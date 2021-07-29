@@ -40,6 +40,18 @@ paths:
           description: Invalid input
       requestBody:
         $ref: '#/components/requestBodies/cycleTestInfo'
+        
+  /reset:
+    get:
+      tags:
+        - cycleTest
+      summary: This is to reset the system and GPIO port
+      operationId: resetGpio
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Item not found
     
 components:
   schemas:
