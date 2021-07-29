@@ -7,39 +7,54 @@ from loguru import logger
 from threading import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-server = 'http://localhost:8080/cycletest'
+server_addr = 'http://localhost:8080/cycletest'
 
 cycle_status = False
 stop_flag = False
 def call_for_status():
-    global server
+    global server_addr
     try:
-        r = requests.get('http://localhost:8080/cycletest')
+        r = requests.get(server_addr)
         return_obj = r.json()
         if return_obj["cycle_status"] == False:
-            logger.info("Successfully got info")
-            logger.info("The cylinders are free")
+            logger.debug("Successfully got info")
+            logger.debug("The cylinders are free")
             return True
         else: 
-            logger.info("Successfully got info")
-            logger.info("The cylinders are in use")
+            logger.debug("Successfully got info")
+            logger.debug("The cylinders are in use")
             return False
     except:
-        logger.info("Something went wrong, can't connect to server")
+        logger.error("Something went wrong, can't connect to server")
 
 def start_cycle_thread():
+    logger.debug("Starting cycle thread")
     t1 = Thread(target=start_cycle)
     t1.start()
 
 def execute_cycle():
-    global server
+    global server_addr
     try:
         status = call_for_status()
         while status == False:
             time.sleep(1)
+            logger.info("The pistons are in use, please wait")
             status = call_for_status()
         # Need to have the proper POST function
-        # requests.post('http://localhost:8080/cycletest')
+        logger.info("Now sending executing signal to piston server")
+        # send over the signal to the server
+        payload = {
+            'cycle_status': True
+        }
+        r = requests.post(server_addr,json=payload)
+        if r.status_code == 200:
+            logger.debug("Request ok")
+        elif r.status_code == 415:
+            logger.error("Unsupported payload")
+        elif r.status_code == 400:
+            logger.error("Bad request")
+        else: 
+            logger.error("Something is wrong")
         time.sleep(1)
         return
     except:
@@ -59,7 +74,7 @@ def start_cycle():
     current_number = start_number
     while current_number <= target_number:
         if stop_flag == False:
-            logger.info("Executing cycle number", current_number)
+            logger.info(f"Executing cycle #{current_number}")
             execute_cycle()
             cycle_number["text"] = f"Executing cycle {current_number}"
             current_number += 1
@@ -91,11 +106,9 @@ target_label = tk.Label(master=fr_entry, text="Target cyce number")
 ent_start_number = tk.Entry(master=fr_entry, width=10)
 ent_target_number = tk.Entry(master=fr_entry, width=10)
 
-
 fr_btn = tk.Frame(window)
 btn_start = tk.Button(fr_btn, text="Start",command=start_cycle_thread)
 btn_end = tk.Button(fr_btn, text="Stop",command=stop_cycle)
-
 
 # Arranging the widgets
 start_label.grid(row=0, column=0, sticky="ew", padx=5, pady=5)

@@ -1,10 +1,12 @@
 import connexion
 import six
+import sys
 # import RPi.GPIO as GPIO
 from loguru import logger
 from time import sleep
 from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
 from server import util
+from threading import *
 import datetime
 
 # cycle_status == False --> Ready to use
@@ -16,6 +18,8 @@ cycle_number = 0
 part_number = ""
 open_pin = 11
 close_pin = 13
+
+test = False
 
 def initialize_gpio():
     logger.info("Initializing GPIO ports")
@@ -50,9 +54,9 @@ def open_latch():
     global open_pin
     global close_pin
     logger.info("Opening part")
-    GPIO.output(open_pin, True)
+    # GPIO.output(open_pin, True)
     sleep(4)
-    GPIO.output(open_pin, False)
+    # GPIO.output(open_pin, False)
     sleep(3)
     return
 
@@ -60,11 +64,27 @@ def close_latch():
     global open_pin
     global close_pin
     logger.info("Closing part")
-    GPIO.output(close_pin, True)
-    sleep(5)
-    GPIO.output(close_pin, False)
+    # GPIO.output(close_pin, True)
+    sleep(10)
+    # GPIO.output(close_pin, False)
     sleep(1)
     return
+
+def full_cycle():
+    global cycle_status
+    cycle_status = True
+    open_latch()
+    close_latch()
+    logger.info("Cycle finished")
+    cycle_status = False
+    sys.exit()
+    return
+
+def full_cycle_thread():
+    global cycle_status
+    logger.debug("Starting cycle thread")
+    t1 = Thread(target = full_cycle)
+    t1.start()
 
 def run_cycle():
     global cycle_status
@@ -117,18 +137,6 @@ def start_cycle(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = CycleTestInfo.from_dict(connexion.request.get_json())  # noqa: E501
-    # Need to figure out how to start the test
-    # global cycle_number
-    # global part_number
-    # global cycle_status
-    # cycle_number = body.cycle_number
-    # part_number = body.part_number
-    # if cycle_status == True:
-    #     logger.info("Cycle is still running")
-
-    #     return "", 
-    # else:
-    #     logger.info("Next cycle")
-    #     run_cycle()
-        # return "", what number?????
+    logger.info("Got trigger signal")
+    # full_cycle_thread()
     return "Let's dance"
