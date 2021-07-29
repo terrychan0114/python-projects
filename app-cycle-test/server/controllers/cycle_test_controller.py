@@ -108,6 +108,24 @@ def run_cycle():
         cycle_status = False
         return False
 
+def reset_thread():
+    global open_pin
+    global close_pin
+    global init_status
+    global cycle_status
+    while cycle_status == True:
+        sleep(1)
+    GPIO.cleanup()
+    open_channel_is_on = GPIO.input(open_pin)
+    close_channel_is_on = GPIO.input(close_pin)
+    if open_channel_is_on == 0 and close_channel_is_on == 0:
+        logger.info("Clean up successfully")
+        init_status = False
+    else:
+        logger.error("Clean up failed")
+    logger.debug("Thread closed")
+    sys.exit()
+
 def get_cycle():  # noqa: E501
     """Get the information
 
@@ -132,22 +150,11 @@ def reset_gpio():  # noqa: E501
 
     :rtype: None
     """
-    global open_pin
-    global close_pin
-    global init_status
     global cycle_status
-    while cycle_status == True:
-        sleep(1)
-    GPIO.cleanup()
-    open_channel_is_on = GPIO.input(open_pin)
-    close_channel_is_on = GPIO.input(close_pin)
-    if open_channel_is_on == 0 and close_channel_is_on == 0:
-        logger.info("Clean up successfully")
-        init_status = False
-        return "", 200
-    else:
-        logger.error("Clean up failed")
-        return "", 500
+    logger.debug("Starting cycle thread")
+    t2 = Thread(target = reset_thread)
+    t2.start()
+    return "",200
 
 def start_cycle(body):  # noqa: E501
     """Add a new info to the server
