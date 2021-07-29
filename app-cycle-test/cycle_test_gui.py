@@ -25,7 +25,7 @@ def call_for_status():
             logger.debug("The cylinders are in use")
             return False
     except:
-        logger.error("Something went wrong, can't connect to server")
+        logger.error("Cannot connect to server")
 
 def start_cycle_thread():
     logger.debug("Starting cycle thread")
