@@ -27,3 +27,4 @@ Dockerfile
 .dockerignore
 .gitignore
 server/__main__.py
+README.md

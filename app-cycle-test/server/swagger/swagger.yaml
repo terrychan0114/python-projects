@@ -41,6 +41,18 @@ paths:
         "405":
           description: Invalid input
       x-openapi-router-controller: server.controllers.cycle_test_controller
+  /reset:
+    get:
+      tags:
+      - cycleTest
+      summary: This is to reset the system and GPIO port
+      operationId: reset_gpio
+      responses:
+        "200":
+          description: Ok
+        "404":
+          description: Item not found
+      x-openapi-router-controller: server.controllers.cycle_test_controller
 components:
   schemas:
     cycleTestInfo:

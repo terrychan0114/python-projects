@@ -1,7 +1,7 @@
 import connexion
 import six
 import sys
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from loguru import logger
 from time import sleep
 from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
@@ -32,9 +32,15 @@ def initialize_gpio():
         GPIO.setup(close_pin, GPIO.OUT) #Yellow LED 
         GPIO.output(open_pin, False)
         GPIO.output(close_pin, False)
-        logger.info("Successful initialization")
-        global init_status
-        init_status = True
+        # Check if initialization is completed:
+        open_channel_is_on = GPIO.input(open_pin)
+        close_channel_is_on = GPIO.input(close_pin)
+        if (open_channel_is_on and close_channel_is_on):
+            logger.info("Successful initialization") 
+            global init_status
+            init_status = True
+        else:
+            logger.error("Initialization failed")
     except:
         logger.info("Initilization failed")
     return
@@ -102,6 +108,7 @@ def run_cycle():
         cycle_status = False
         return False
 
+
 def get_cycle():  # noqa: E501
     """Get the information
 
@@ -121,6 +128,30 @@ def get_cycle():  # noqa: E501
     return return_obj
 
 
+def reset_gpio():  # noqa: E501
+    """This is to reset the system and GPIO port
+
+     # noqa: E501
+
+
+    :rtype: None
+    """
+    global open_pin
+    global close_pin
+    global init_status
+    GPIO.cleanup()
+    open_channel_is_on = GPIO.input(open_pin)
+    close_channel_is_on = GPIO.input(close_pin)
+    if open_channel_is_on == 0 and close_channel_is_on == 0:
+        logger.info("Clean up successfully")
+        init_status = False
+        return "", 200
+    else:
+        logger.error("Clean up failed")
+        return "", 500
+
+    
+
 def start_cycle(body):  # noqa: E501
     """Add a new info to the server
 
@@ -139,4 +170,4 @@ def start_cycle(body):  # noqa: E501
         logger.info("Initializing GPIO")
         initialize_gpio()
     full_cycle_thread()
-    return
+    return "", 200
