@@ -12,14 +12,10 @@ import datetime
 # cycle_status == False --> Ready to use
 # cycle_status == True --> In use
 cycle_status=False
-
 init_status=False
 cycle_number = 0
-part_number = ""
 open_pin = 11
 close_pin = 13
-
-test = False
 
 def initialize_gpio():
     logger.info("Initializing GPIO ports")
@@ -108,12 +104,10 @@ def run_cycle():
         cycle_status = False
         return False
 
-
 def get_cycle():  # noqa: E501
     """Get the information
 
      # noqa: E501
-
 
     :rtype: CycleTestInfo
     """
@@ -127,12 +121,10 @@ def get_cycle():  # noqa: E501
         logger.error("Failed to get info")
     return return_obj
 
-
 def reset_gpio():  # noqa: E501
     """This is to reset the system and GPIO port
 
      # noqa: E501
-
 
     :rtype: None
     """
@@ -149,8 +141,6 @@ def reset_gpio():  # noqa: E501
     else:
         logger.error("Clean up failed")
         return "", 500
-
-    
 
 def start_cycle(body):  # noqa: E501
     """Add a new info to the server
