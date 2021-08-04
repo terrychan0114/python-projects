@@ -1,6 +1,6 @@
 import tkinter as tk
 import requests
-import logging
+from loguru import logger
 import json
 import time
 import sys
