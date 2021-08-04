@@ -142,7 +142,7 @@ def reset_gpio():
 # # add the handlers to the logger
 # logger.addHandler(fh)
 # logger.addHandler(ch)
-logger.add(sys.stdout format="{time} {level} {message}", filter="app_cycle_test", level="INFO")
+logger.add(sys.stdout, format="{time} {level} {message}", filter="gui_cycle_test", level="INFO")
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
 window.title("Cycle test")
