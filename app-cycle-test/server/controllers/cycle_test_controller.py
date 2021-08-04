@@ -40,9 +40,9 @@ def initialize_gpio():
             global init_status
             init_status = True
         else:
-            logger.error("Initialization failed")
+            logger.error("Initialization not completed")
     except:
-        logger.info("Initilization failed")
+        logger.info("Init startup failed")
     return
 
 # This function is to get the pi status
