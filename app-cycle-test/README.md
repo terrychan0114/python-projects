@@ -32,7 +32,7 @@ You should see the GUI like this that popsup:
 Now you're ready to run the test.
 
 ## Starting the test
-1. Type in the "Start cycle number" and "Target cycle number"
+1. Type in all of the required fields using the keypad for each field
 2. Press "Start"
 
 ## Stopping the test
