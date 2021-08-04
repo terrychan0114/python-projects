@@ -28,21 +28,21 @@ def initialize_gpio():
     #    logger.debug("GPIO already cleaned up")
     try:
         GPIO.setmode(GPIO.BOARD) 
-        GPIO.setup(open_pin, GPIO.OUT) #Red LED 
-        GPIO.setup(close_pin, GPIO.OUT) #Yellow LED 
+        GPIO.setup(open_pin, GPIO.OUT, initial=GPIO.LOW) #Red LED 
+        GPIO.setup(close_pin, GPIO.OUT, initial=GPIO.LOW) #Yellow LED 
         GPIO.output(open_pin, False)
         GPIO.output(close_pin, False)
-        # Check if initialization is completed:
-        open_channel_is_on = GPIO.input(open_pin)
-        close_channel_is_on = GPIO.input(close_pin)
-        if (open_channel_is_on and close_channel_is_on):
-            logger.info("Successful initialization") 
-            global init_status
-            init_status = True
-        else:
-            logger.debug(f"open channel is {open_channel_is_on}")
-            logger.debug(f"close channel is {close_channel_is_on}")
-            logger.error("Initialization not completed")
+        # # Check if initialization is completed:
+        # open_channel_is_on = GPIO.input(open_pin)
+        # close_channel_is_on = GPIO.input(close_pin)
+        # if (open_channel_is_on and close_channel_is_on):
+        #     logger.info("Successful initialization") 
+        #     global init_status
+        #     init_status = True
+        # else:
+        #     logger.debug(f"open channel is {open_channel_is_on}")
+        #     logger.debug(f"close channel is {close_channel_is_on}")
+        #     logger.error("Initialization not completed")
     except:
         logger.info("Init startup failed")
     return
@@ -80,9 +80,21 @@ def close_latch():
 
 def full_cycle():
     global cycle_status
-    cycle_status = True
-    open_latch()
-    close_latch()
+
+    if cycle_status == True:
+        open_latch()
+    else:
+        logger.info("Cycle stopped")
+        logger.info("Closing execute cycle thread")
+        sys.exit()
+        return
+    if cycle_status == True:
+        close_latch()
+    else: 
+        logger.info("Cycle stopped")
+        logger.info("Closing execute cycle thread")
+        sys.exit()
+        return
     logger.info("Cycle finished")
     cycle_status = False
     sys.exit()
@@ -90,42 +102,34 @@ def full_cycle():
 
 def full_cycle_thread():
     global cycle_status
-    logger.debug("Starting cycle thread")
+    cycle_status = True
+    logger.debug("Start execute cycle thread")
     t1 = Thread(target = full_cycle)
     t1.start()
 
-def run_cycle():
-    global cycle_status
-    global init_status
-    try:
-        logger.info("Starting test")
-        logger.info("Open latch")
-        open_latch()
-        logger.info("Close latch")
-        close_latch()
-        cycle_status = False
-        return True
-    except:
-        logger.error("Something went wrong, unable to start test")
-        cycle_status = False
-        return False
+# def run_cycle():
+#     global cycle_status
+#     global init_status
+#     try:
+#         logger.info("Starting test")
+#         logger.info("Open latch")
+#         open_latch()
+#         logger.info("Close latch")
+#         close_latch()
+#         cycle_status = False
+#         return True
+#     except:
+#         logger.error("Something went wrong, unable to start test")
+#         cycle_status = False
+#         return False
 
 def reset_thread():
     global open_pin
     global close_pin
     global init_status
-    global cycle_status
-    while cycle_status == True:
-        sleep(1)
     GPIO.cleanup()
-    open_channel_is_on = GPIO.input(open_pin)
-    close_channel_is_on = GPIO.input(close_pin)
-    if open_channel_is_on == 0 and close_channel_is_on == 0:
-        logger.info("Clean up successfully")
-        init_status = False
-    else:
-        logger.error("Clean up failed")
-    logger.debug("Thread closed")
+    logger.debug("Cleanup finished")
+    logger.debug("Closing reset thread")
     sys.exit()
 
 def get_cycle():  # noqa: E501
@@ -153,7 +157,8 @@ def reset_gpio():  # noqa: E501
     :rtype: None
     """
     global cycle_status
-    logger.debug("Starting cycle thread")
+    cycle_status = False
+    logger.debug("Starting reset thread")
     t2 = Thread(target = reset_thread)
     t2.start()
     return "",200

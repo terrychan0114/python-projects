@@ -98,6 +98,7 @@ def reset_gpio():
         logger.info("GPIO reset finished")
     else:
         logger.error("GPIO reset failed")
+        
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
 window.title("Cycle test")
