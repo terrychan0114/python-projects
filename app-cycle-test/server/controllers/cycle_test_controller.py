@@ -1,7 +1,7 @@
 import connexion
 import six
 import sys
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import logging
 from loguru import logger
 from time import sleep

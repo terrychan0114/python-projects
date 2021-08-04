@@ -40,7 +40,7 @@ def execute_cycle(oat,ort,cat,crt):
         status = call_for_status()
         while status == False:
             time.sleep(1)
-            logger.info("The pistons are in use, please wait")
+            logger.debug("The pistons are in use, please wait")
             status = call_for_status()
         # Need to have the proper POST function
         if stop_flag == False:
