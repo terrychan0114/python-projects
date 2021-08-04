@@ -82,8 +82,8 @@ def start_cycle():
     while current_number <= target_number:
         global stop_flag
         if stop_flag == False:
-            logger.info(f"Executing cycle #{current_number}")
-            cycle_number["text"] = f"Executing cycle {current_number}"
+            logger.info(f"Executing cycle #{current_number-1}")
+            cycle_number["text"] = f"Executing cycle {current_number-1}"
             execute_cycle()
             current_number += 1
         else:
