@@ -27,7 +27,7 @@ import datetime
 # # add the handlers to the logger
 # logger.addHandler(fh)
 # logger.addHandler(ch)
-logger.add(sys.stderr, format="{time} {level} {message}", filter="app_cycle_test", level="INFO")
+logger.add(sys.stdout, format="{time} {level} {message}", filter="app_cycle_test", level="INFO")
 # cycle_status == False --> Ready to use
 # cycle_status == True --> In use
 cycle_status=False
