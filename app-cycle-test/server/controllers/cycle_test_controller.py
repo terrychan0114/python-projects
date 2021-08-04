@@ -1,8 +1,8 @@
 import connexion
 import six
 import sys
-import RPi.GPIO as GPIO
-from loguru import logger
+# import RPi.GPIO as GPIO
+import logging
 from time import sleep
 
 from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
@@ -11,6 +11,21 @@ from server.models.cycle_test_config import CycleTestConfig  # noqa: E501
 from server import util
 from threading import *
 import datetime
+
+logger = logging.getLogger("app_cycle_test")
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('app_cycle_test.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 # cycle_status == False --> Ready to use
 # cycle_status == True --> In use
@@ -134,8 +149,8 @@ def reset_thread():
         logger.debug("Still in use")
         sleep(1)
     GPIO.cleanup()
-    logger.debug("Cleanup finished")
-    logger.debug("Closing reset thread")
+    logger.info("Cleanup finished")
+    logger.info("Closing reset thread")
     sys.exit()
     return
 
@@ -149,7 +164,7 @@ def get_cycle():  # noqa: E501
     :rtype: CycleTestInfo
     """
     try:
-        # logger.info("Getting current info")
+        logger.info("Getting current info")
         return_obj = CycleTestInfo()
         return_obj.cycle_status = cycle_status
         return_obj.date = datetime.datetime.now()

@@ -1,9 +1,9 @@
 import tkinter as tk
 import requests
+import logging
 import json
 import time
 import sys
-from loguru import logger
 from threading import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
@@ -127,6 +127,21 @@ def reset_gpio():
         logger.info("GPIO reset finished")
     else:
         logger.error("GPIO reset failed")
+
+logger = logging.getLogger("gui_cycle_test")
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('gui_cycle_test.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
