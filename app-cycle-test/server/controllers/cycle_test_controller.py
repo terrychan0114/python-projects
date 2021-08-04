@@ -12,6 +12,7 @@ import datetime
 # cycle_status == False --> Ready to use
 # cycle_status == True --> In use
 cycle_status=False
+stop_flag = False
 init_status=False
 cycle_number = 0
 open_pin = 11
@@ -80,22 +81,28 @@ def close_latch():
 
 def full_cycle():
     global cycle_status
-
-    if cycle_status == True:
+    global stop_flag
+    operation = 0
+    if stop_flag == False:
         open_latch()
+        operation += 1
     else:
         logger.info("Cycle stopped")
         logger.info("Closing execute cycle thread")
         sys.exit()
         return
-    if cycle_status == True:
+    if stop_flag == False:
         close_latch()
+        operation += 1
     else: 
         logger.info("Cycle stopped")
         logger.info("Closing execute cycle thread")
         sys.exit()
         return
-    logger.info("Cycle finished")
+    if operation == 2:
+        logger.info("Cycle finished")
+    else: 
+        logger.info("Cycle stopped")
     cycle_status = False
     sys.exit()
     return
@@ -107,30 +114,17 @@ def full_cycle_thread():
     t1 = Thread(target = full_cycle)
     t1.start()
 
-# def run_cycle():
-#     global cycle_status
-#     global init_status
-#     try:
-#         logger.info("Starting test")
-#         logger.info("Open latch")
-#         open_latch()
-#         logger.info("Close latch")
-#         close_latch()
-#         cycle_status = False
-#         return True
-#     except:
-#         logger.error("Something went wrong, unable to start test")
-#         cycle_status = False
-#         return False
-
 def reset_thread():
-    global open_pin
-    global close_pin
-    global init_status
+
+    global stop_flag
+    global cycle_status
+    while cycle_status == True:
+        sleep(1)
     GPIO.cleanup()
     logger.debug("Cleanup finished")
     logger.debug("Closing reset thread")
     sys.exit()
+    return
 
 def get_cycle():  # noqa: E501
     """Get the information
@@ -157,7 +151,8 @@ def reset_gpio():  # noqa: E501
     :rtype: None
     """
     global cycle_status
-    cycle_status = False
+    global stop_flag
+    stop_flag = True
     logger.debug("Starting reset thread")
     t2 = Thread(target = reset_thread)
     t2.start()
@@ -177,8 +172,10 @@ def start_cycle(body):  # noqa: E501
         body = CycleTestInfo.from_dict(connexion.request.get_json())  # noqa: E501
     logger.info("Got trigger signal")
     global init_status
+    global stop_flag
     if init_status == False:
         logger.info("Initializing GPIO")
         initialize_gpio()
+    stop_flag = False
     full_cycle_thread()
     return "", 200
