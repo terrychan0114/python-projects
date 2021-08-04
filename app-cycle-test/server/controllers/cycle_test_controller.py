@@ -89,16 +89,12 @@ def full_cycle():
     else:
         # logger.info("Cycle stopped")
         logger.info("Closing execute cycle thread on open")
-
-        return
     if stop_flag == False:
         close_latch()
         operation += 1
     else: 
         # logger.info("Cycle stopped")
         logger.info("Closing execute cycle thread on close")
-
-        return
     if operation == 2:
         logger.info("Cycle finished")
     else: 

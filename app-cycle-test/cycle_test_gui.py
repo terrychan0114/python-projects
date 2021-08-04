@@ -78,8 +78,8 @@ def start_cycle():
         global stop_flag
         if stop_flag == False:
             logger.info(f"Executing cycle #{current_number}")
-            execute_cycle()
             cycle_number["text"] = f"Executing cycle {current_number}"
+            execute_cycle()
             current_number += 1
         else:
             logger.info("Stopping thread...")
