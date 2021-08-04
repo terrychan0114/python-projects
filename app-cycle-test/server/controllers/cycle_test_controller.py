@@ -89,7 +89,7 @@ def full_cycle():
     else:
         # logger.info("Cycle stopped")
         logger.info("Closing execute cycle thread on open")
-        sys.exit()
+
         return
     if stop_flag == False:
         close_latch()
@@ -97,7 +97,7 @@ def full_cycle():
     else: 
         # logger.info("Cycle stopped")
         logger.info("Closing execute cycle thread on close")
-        sys.exit()
+
         return
     if operation == 2:
         logger.info("Cycle finished")
