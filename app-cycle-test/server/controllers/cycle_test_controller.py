@@ -40,6 +40,8 @@ def initialize_gpio():
             global init_status
             init_status = True
         else:
+            logger.debug(f"open channel is {open_channel_is_on}")
+            logger.debug(f"close channel is {close_channel_is_on}")
             logger.error("Initialization not completed")
     except:
         logger.info("Init startup failed")
