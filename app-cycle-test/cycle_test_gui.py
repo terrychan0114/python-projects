@@ -82,22 +82,22 @@ def start_cycle():
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
     try:
-        oat = ent_oat.get()
+        oat = float(ent_oat.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Start number is not integer"
     try:
-        ort = ent_ort.get()
+        ort = float(ent_ort.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
     try:
-        cat = ent_cat.get()
+        cat = float(ent_cat.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Start number is not integer"
     try:
-        crt = ent_crt.get()
+        crt = float(ent_crt.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
