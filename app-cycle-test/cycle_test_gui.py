@@ -4,8 +4,66 @@ from loguru import logger
 import json
 import time
 import sys
-from threading import *
+from threading import Thread
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+
+class Keypad(tk.Frame):
+
+    cells = [
+        ['1', '2', '3'],
+        ['4', '5', '6'],
+        ['7', '8', '9'],
+        ['0', '.', ' '],
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.target = None
+
+        for y, row in enumerate(self.cells):
+            for x, item in enumerate(row):
+                b = tk.Button(self, text=item, command=lambda text=item:self.append(text))
+                b.grid(row=y, column=x, sticky='news')
+
+        x = tk.Button(self, text='Backspace', command=self.backspace)
+        x.grid(row=0, column=10, sticky='news')
+
+        x = tk.Button(self, text='Clear', command=self.clear)
+        x.grid(row=1, column=10, sticky='news')
+
+        x = tk.Button(self, text='Hide', command=self.hide)
+        x.grid(row=10, column=0, columnspan=11, sticky='news')
+
+
+    def get(self):
+        if self.target:
+            return self.target.get()
+
+    def append(self, text):
+        if self.target:
+            self.target.insert('end', text)
+
+    def clear(self):
+        if self.target:
+            self.target.delete(0, 'end')
+
+    def backspace(self):
+        if self.target:
+            text = self.get()
+            text = text[:-1]
+            self.clear()
+            self.append(text)
+
+    def show(self, entry):
+        self.target = entry
+
+        self.place(relx=0.5, rely=1, anchor='s')
+
+    def hide(self):
+        self.target = None
+
+        self.place_forget()
 
 server_addr = 'http://localhost:8080'
 
@@ -76,32 +134,39 @@ def start_cycle():
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Start number is not integer"
+    
     try:
         target_number = int(ent_target_number.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
+    
     try:
         oat = float(ent_oat.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Start number is not integer"
+    
     try:
         ort = float(ent_ort.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
+    
     try:
         cat = float(ent_cat.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Start number is not integer"
+    
     try:
         crt = float(ent_crt.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
+    
     current_number = start_number
+    
     while current_number <= target_number:
         global stop_flag
         if stop_flag == False:
@@ -128,24 +193,11 @@ def reset_gpio():
     else:
         logger.error("GPIO reset failed")
 
-# logger = logging.getLogger("gui_cycle_test")
-# logger.setLevel(logging.DEBUG)
-# fh = logging.FileHandler('gui_cycle_test.log')
-# fh.setLevel(logging.DEBUG)
-# # create console handler with a higher log level
-# ch = logging.StreamHandler()
-# ch.setLevel(logging.INFO)
-# # create formatter and add it to the handlers
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# fh.setFormatter(formatter)
-# ch.setFormatter(formatter)
-# # add the handlers to the logger
-# logger.addHandler(fh)
-# logger.addHandler(ch)
 logger.add(sys.stdout, format="{time} {level} {message}", filter="gui_cycle_test", level="INFO")
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
 window.title("Cycle test")
+# Create keypad
 
 # Set row and column configuration
 window.rowconfigure(0, minsize=100, weight=1)
@@ -153,6 +205,7 @@ window.columnconfigure(1, minsize=100, weight=1)
 
 # Creating all of the widget components in this application
 cycle_number = tk.Label(master=window, text="Input cycle start number and target number, then press start")
+
 
 fr_entry = tk.Frame(window)
 start_label = tk.Label(master=fr_entry, text="Start cycle number")
@@ -168,10 +221,26 @@ ent_ort = tk.Entry(master=fr_entry, width=10)
 ent_cat = tk.Entry(master=fr_entry, width=10)
 ent_crt = tk.Entry(master=fr_entry, width=10)
 
+# keypads
+keypad = Keypad(fr_entry)
+keypad_entry = tk.Frame(window)
+
+b1 = tk.Button(fr_entry, text='Keypad', command=lambda:keypad.show(ent_start_number))
+b1.grid(row=0, column=3, sticky='news')
+b2 = tk.Button(fr_entry, text='Keypad', command=lambda:keypad.show(ent_target_number))
+b2.grid(row=1, column=3, sticky='news')
+b3 = tk.Button(fr_entry, text='Keypad', command=lambda:keypad.show(ent_oat))
+b3.grid(row=2, column=3, sticky='news')
+b4 = tk.Button(fr_entry, text='Keypad', command=lambda:keypad.show(ent_ort))
+b4.grid(row=3, column=3, sticky='news')
+b5 = tk.Button(fr_entry, text='Keypad', command=lambda:keypad.show(ent_cat))
+b5.grid(row=4, column=3, sticky='news')
+b6 = tk.Button(fr_entry, text='Keypad', command=lambda:keypad.show(ent_crt))
+b6.grid(row=5, column=3, sticky='news')
+
 fr_btn = tk.Frame(window)
 btn_start = tk.Button(fr_btn, text="Start",command=start_cycle_thread)
 btn_end = tk.Button(fr_btn, text="Stop",command=stop_cycle)
-# btn_reset = tk.Button(fr_btn,text="Reset",command=reset)
 
 # Arranging the widgets
 start_label.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
@@ -190,8 +259,10 @@ ent_crt.grid(row=5, column=1, sticky="ew", padx=5, pady=5)
 
 btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
 btn_end.grid(row=0, column=1, sticky="ew", padx=5)
+
 fr_entry.grid(row=0, column=0, sticky="ns")
-fr_btn.grid(row=1, column=1, sticky="ns")
+keypad_entry.grid(row=1,column=0, sticky="ns")
+fr_btn.grid(row=1, column=1, sticky="nsew")
 cycle_number.grid(row=0,column=1,sticky="nsew")
 # Run windows
 window.mainloop()
