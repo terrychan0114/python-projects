@@ -194,7 +194,10 @@ def start_cycle(body=None):  # noqa: E501
     open_retract_time = body.open_retract_time
     close_activate_time = body.close_activate_time
     close_retract_time = body.close_retract_time
-
+    logger.debug(f"Open activation time is {open_activate_time}")
+    logger.debug(f"Open retract time is {open_retract_time}")
+    logger.debug(f"Close activation time is {close_activate_time}")
+    logger.debug(f"Close retract time is {close_retract_time}")
     if init_status == False:
         logger.info("Initializing GPIO")
         initialize_gpio()
