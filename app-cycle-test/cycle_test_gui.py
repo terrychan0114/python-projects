@@ -43,22 +43,25 @@ def execute_cycle():
             logger.info("The pistons are in use, please wait")
             status = call_for_status()
         # Need to have the proper POST function
-        logger.info("Now sending executing signal to piston server")
-        # send over the signal to the server
-        payload = {
-            'cycle_status': True
-        }
-        r = requests.post(server_addr+'/cycletest',json=payload)
-        if r.status_code == 200:
-            logger.debug("Request ok")
-        elif r.status_code == 415:
-            logger.error("Unsupported payload")
-        elif r.status_code == 400:
-            logger.error("Bad request")
-        else: 
-            logger.error("Something is wrong")
-        time.sleep(1)
-        return
+        if stop_flag == False:
+            logger.info("Now sending executing signal to piston server")
+            # send over the signal to the server
+            payload = {
+                'cycle_status': True
+            }
+            r = requests.post(server_addr+'/cycletest',json=payload)
+            if r.status_code == 200:
+                logger.debug("Request ok")
+            elif r.status_code == 415:
+                logger.error("Unsupported payload")
+            elif r.status_code == 400:
+                logger.error("Bad request")
+            else: 
+                logger.error("Something is wrong")
+            time.sleep(1)
+            return
+        else:
+            return
     except:
         logger.error("Not able to send in post request")
         raise
@@ -69,10 +72,12 @@ def start_cycle():
         start_number = int(ent_start_number.get())
     except ValueError:
         logger.error("Entry value is not an integer")
+        cycle_number["text"] = "Start number is not integer"
     try:
         target_number = int(ent_target_number.get())
     except ValueError:
         logger.error("Entry value is not an integer")
+        cycle_number["text"] = "Target number is not integer"
     current_number = start_number
     while current_number <= target_number:
         global stop_flag
