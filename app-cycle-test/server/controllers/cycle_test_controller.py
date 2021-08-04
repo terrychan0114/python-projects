@@ -21,10 +21,10 @@ cycle_number = 0
 open_pin = 11
 close_pin = 13
 
-open_activate_time = 1
-open_retract_time = 1
-close_activate_time = 1
-close_retract_time = 1
+open_activate_time = 1.0
+open_retract_time = 1.0
+close_activate_time = 1.0
+close_retract_time = 1.0
 
 def initialize_gpio():
     logger.info("Initializing GPIO ports")
@@ -73,6 +73,8 @@ def open_latch():
     global open_activate_time
     global open_retract_time
     logger.info("Opening part")
+    logger.debug(f"OAT is {open_activate_time}")
+    logger.debug(f"ORT is {open_retract_time}")
     GPIO.output(open_pin, True)
     sleep(open_activate_time)
     GPIO.output(open_pin, False)
@@ -85,6 +87,8 @@ def close_latch():
     global close_activate_time
     global close_retract_time
     logger.info("Closing part")
+    logger.debug(f"CAT is {close_activate_time}")
+    logger.debug(f"CRT is {close_retract_time}")
     GPIO.output(close_pin, True)
     sleep(close_activate_time)
     GPIO.output(close_pin, False)
