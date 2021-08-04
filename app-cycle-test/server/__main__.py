@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import connexion
-from loguru import logger
+
 from server import encoder
 from flask_cors import CORS
 

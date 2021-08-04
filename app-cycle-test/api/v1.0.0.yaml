@@ -39,7 +39,7 @@ paths:
         '405':
           description: Invalid input
       requestBody:
-        $ref: '#/components/requestBodies/cycleTestInfo'
+        $ref: '#/components/requestBodies/cycleTestConfig'
         
   /reset:
     get:
@@ -66,6 +66,27 @@ components:
         timestamp:
           type: string
           example: 7/16/2020 16:38
+          
+    cycleTestConfig:
+      type: object
+      required:
+        - open_activate_time
+        - open_retract_time
+        - close_activate_time
+        - close_retract_time
+      properties:
+        open_activate_time:
+          type: number
+          example: 1
+        open_retract_time:
+          type: number
+          example: 2
+        close_activate_time:
+          type: number
+          example: 3
+        close_retract_time:
+          type: number
+          example: 3.5
 
   requestBodies:
     cycleTestInfo:
@@ -74,3 +95,9 @@ components:
           schema:
             $ref: '#/components/schemas/cycleTestInfo'
       required: true
+    
+    cycleTestConfig:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/cycleTestConfig'
