@@ -11,6 +11,7 @@ server_addr = 'http://localhost:8080'
 
 cycle_status = False
 stop_flag = False
+
 def call_for_status():
     global server_addr
     try:
@@ -18,12 +19,12 @@ def call_for_status():
         r = requests.get(server_addr+'/cycletest')
         return_obj = r.json()
         if return_obj["cycle_status"] == False:
-            logger.debug("Successfully got info")
-            logger.debug("The cylinders are free")
+            # logger.debug("Successfully got info")
+            # logger.debug("The cylinders are free")
             return True
         else: 
-            logger.debug("Successfully got info")
-            logger.debug("The cylinders are in use")
+            # logger.debug("Successfully got info")
+            # logger.debug("The cylinders are in use")
             return False
     except:
         logger.error("Cannot connect to server")
@@ -63,7 +64,7 @@ def execute_cycle():
         raise
 
 def start_cycle():
-    global stop_flag
+    
     try:
         start_number = int(ent_start_number.get())
     except ValueError:
@@ -74,6 +75,7 @@ def start_cycle():
         logger.error("Entry value is not an integer")
     current_number = start_number
     while current_number <= target_number:
+        global stop_flag
         if stop_flag == False:
             logger.info(f"Executing cycle #{current_number}")
             execute_cycle()
@@ -83,7 +85,6 @@ def start_cycle():
             logger.info("Stopping thread...")
             stop_flag = False
             cycle_number["text"] = f"Stopped at cycle {current_number-1}"
-
             sys.exit()
     cycle_number["text"] = f"Finished execution of {current_number-1} cycles"
 
@@ -98,7 +99,7 @@ def reset_gpio():
         logger.info("GPIO reset finished")
     else:
         logger.error("GPIO reset failed")
-        
+
 # Create a new window with the title "Simple Text Editor"
 window = tk.Tk()
 window.title("Cycle test")

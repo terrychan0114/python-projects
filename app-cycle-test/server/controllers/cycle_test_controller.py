@@ -53,10 +53,10 @@ def pi_status():
     # This is the function to test if the test is still running
     global cycle_status
     if cycle_status == False:
-        logger.debug("The cycle is not running")
+        # logger.debug("The cycle is not running")
         return False
     else:
-        logger.debug("The cycle is running")
+        # logger.debug("The cycle is running")
         return True
 
 def open_latch():
@@ -87,16 +87,16 @@ def full_cycle():
         open_latch()
         operation += 1
     else:
-        logger.info("Cycle stopped")
-        logger.info("Closing execute cycle thread")
+        # logger.info("Cycle stopped")
+        logger.info("Closing execute cycle thread on open")
         sys.exit()
         return
     if stop_flag == False:
         close_latch()
         operation += 1
     else: 
-        logger.info("Cycle stopped")
-        logger.info("Closing execute cycle thread")
+        # logger.info("Cycle stopped")
+        logger.info("Closing execute cycle thread on close")
         sys.exit()
         return
     if operation == 2:
@@ -119,6 +119,7 @@ def reset_thread():
     global stop_flag
     global cycle_status
     while cycle_status == True:
+        logger.debug("Still in use")
         sleep(1)
     GPIO.cleanup()
     logger.debug("Cleanup finished")
@@ -135,7 +136,7 @@ def get_cycle():  # noqa: E501
     """
     global cycle_status
     try:
-        logger.info("Getting current info")
+        # logger.info("Getting current info")
         return_obj = CycleTestInfo()
         return_obj.cycle_status = cycle_status
         return_obj.date = datetime.datetime.now()
