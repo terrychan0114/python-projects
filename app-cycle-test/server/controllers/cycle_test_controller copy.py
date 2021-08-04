@@ -4,10 +4,7 @@ import sys
 import RPi.GPIO as GPIO
 from loguru import logger
 from time import sleep
-
 from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
-from server.models.cycle_test_config import CycleTestConfig  # noqa: E501
-
 from server import util
 from threading import *
 import datetime
@@ -20,11 +17,6 @@ init_status=False
 cycle_number = 0
 open_pin = 11
 close_pin = 13
-
-open_activate_time = 1
-open_retract_time = 1
-close_activate_time = 1
-close_retract_time = 1
 
 def initialize_gpio():
     logger.info("Initializing GPIO ports")
@@ -70,25 +62,21 @@ def pi_status():
 def open_latch():
     global open_pin
     global close_pin
-    global open_activate_time
-    global open_retract_time
     logger.info("Opening part")
     GPIO.output(open_pin, True)
-    sleep(open_activate_time)
+    sleep(4)
     GPIO.output(open_pin, False)
-    sleep(open_retract_time)
+    sleep(3)
     return
 
 def close_latch():
     global open_pin
     global close_pin
-    global close_activate_time
-    global close_retract_time
     logger.info("Closing part")
     GPIO.output(close_pin, True)
-    sleep(close_activate_time)
+    sleep(10)
     GPIO.output(close_pin, False)
-    sleep(close_retract_time)
+    sleep(1)
     return
 
 def full_cycle():
@@ -135,15 +123,14 @@ def reset_thread():
     sys.exit()
     return
 
-
 def get_cycle():  # noqa: E501
     """Get the information
 
      # noqa: E501
 
-
     :rtype: CycleTestInfo
     """
+    global cycle_status
     try:
         # logger.info("Getting current info")
         return_obj = CycleTestInfo()
@@ -153,12 +140,10 @@ def get_cycle():  # noqa: E501
         logger.error("Failed to get info")
     return return_obj
 
-
 def reset_gpio():  # noqa: E501
     """This is to reset the system and GPIO port
 
      # noqa: E501
-
 
     :rtype: None
     """
@@ -170,8 +155,7 @@ def reset_gpio():  # noqa: E501
     t2.start()
     return "",200
 
-
-def start_cycle(body=None):  # noqa: E501
+def start_cycle(body):  # noqa: E501
     """Add a new info to the server
 
      # noqa: E501
@@ -182,19 +166,10 @@ def start_cycle(body=None):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        body = CycleTestConfig.from_dict(connexion.request.get_json())  # noqa: E501
+        body = CycleTestInfo.from_dict(connexion.request.get_json())  # noqa: E501
     logger.info("Got trigger signal")
     global init_status
     global stop_flag
-    global open_activate_time
-    global open_retract_time
-    global close_activate_time
-    global close_retract_time
-    open_activate_time = body.open_activate_time
-    open_retract_time = body.open_retract_time
-    close_activate_time = body.close_activate_time
-    close_retract_time = body.close_retract_time
-
     if init_status == False:
         logger.info("Initializing GPIO")
         initialize_gpio()
