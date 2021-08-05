@@ -86,6 +86,9 @@ def call_for_status():
             return False
     except:
         logger.error("Cannot connect to server")
+        cycle_number["text"] = "Cannot connect to server"
+        raise
+
 
 def start_cycle_thread():
     logger.debug("Starting cycle thread")
@@ -128,43 +131,29 @@ def execute_cycle(oat,ort,cat,crt):
         raise
 
 def start_cycle():
-    
+
     try:
         start_number = int(ent_start_number.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Start number is not integer"
-    
+        raise
     try:
         target_number = int(ent_target_number.get())
     except ValueError:
         logger.error("Entry value is not an integer")
         cycle_number["text"] = "Target number is not integer"
+        raise
     
     try:
         oat = float(ent_oat.get())
-    except ValueError:
-        logger.error("Entry value is not an integer")
-        cycle_number["text"] = "Start number is not integer"
-    
-    try:
         ort = float(ent_ort.get())
-    except ValueError:
-        logger.error("Entry value is not an integer")
-        cycle_number["text"] = "Target number is not integer"
-    
-    try:
         cat = float(ent_cat.get())
-    except ValueError:
-        logger.error("Entry value is not an integer")
-        cycle_number["text"] = "Start number is not integer"
-    
-    try:
         crt = float(ent_crt.get())
     except ValueError:
-        logger.error("Entry value is not an integer")
+        logger.error("Entry value is not valid")
         cycle_number["text"] = "Target number is not integer"
-    
+        raise
     current_number = start_number
     
     while current_number <= target_number:
@@ -192,6 +181,7 @@ def reset_gpio():
         logger.info("GPIO reset finished")
     else:
         logger.error("GPIO reset failed")
+
 
 logger.add(sys.stdout, format="{time} {level} {message}", filter="gui_cycle_test", level="INFO")
 # Create a new window with the title "Simple Text Editor"

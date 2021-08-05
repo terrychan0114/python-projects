@@ -5,28 +5,13 @@ import RPi.GPIO as GPIO
 import logging
 from loguru import logger
 from time import sleep
-
-from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
-from server.models.cycle_test_config import CycleTestConfig  # noqa: E501
-
-from server import util
 from threading import *
 import datetime
 
-# logger = logging.getLogger("app_cycle_test")
-# logger.setLevel(logging.DEBUG)
-# fh = logging.FileHandler('app_cycle_test.log')
-# fh.setLevel(logging.DEBUG)
-# # create console handler with a higher log level
-# ch = logging.StreamHandler()
-# ch.setLevel(logging.INFO)
-# # create formatter and add it to the handlers
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# fh.setFormatter(formatter)
-# ch.setFormatter(formatter)
-# # add the handlers to the logger
-# logger.addHandler(fh)
-# logger.addHandler(ch)
+from server.models.cycle_test_info import CycleTestInfo  # noqa: E501
+from server.models.cycle_test_config import CycleTestConfig  # noqa: E501
+from server import util
+
 logger.add(sys.stdout, format="{time} {level} {message}", filter="app_cycle_test", level="INFO")
 # cycle_status == False --> Ready to use
 # cycle_status == True --> In use
